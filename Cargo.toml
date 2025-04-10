@@ -1,0 +1,67 @@
+[package]
+name = "pyarti"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "pyarti"
+crate-type = ["cdylib"]
+path = "src/python_lib.rs"
+
+[dependencies]
+# Core Dependencies
+bytes = "1.4"
+futures = "0.3"
+async-trait = "0.1"
+async-stream = "0.3"
+postage = "0.5"
+hex = "0.4"
+rand = "0.8"
+base64 = "0.13"
+anyhow = "1.0"
+time = "0.3"
+tracing = "0.1"
+tokio-rustls = "0.24"
+log = "0.4.26"
+env_logger = "0.11.7"
+
+# Arti (Tor) Dependencies
+tor-units = { path = "./arti/crates/tor-units" }
+tor-config = { path = "./arti/crates/tor-config" }
+tor-dirmgr = { path = "./arti/crates/tor-dirmgr" }
+tor-chanmgr = { path = "./arti/crates/tor-chanmgr" }
+tor-netdir = { path = "./arti/crates/tor-netdir" }
+tor-proto = { path = "./arti/crates/tor-proto" }
+tor-linkspec = { path = "./arti/crates/tor-linkspec" }
+tor-llcrypto = { path = "./arti/crates/tor-llcrypto" }
+tor-memquota = { path = "./arti/crates/tor-memquota" }
+tor-basic-utils = { path = "./arti/crates/tor-basic-utils" }
+tor-relay-selection = { path = "./arti/crates/tor-relay-selection" }
+
+[dependencies.pyo3]
+version = "0.18"
+features = ["extension-module"]
+
+[dependencies.rusqlite]
+version = "0.32"
+features = ["bundled"]
+
+[dependencies.tokio]
+version = "1.0"
+features = ["full"]
+
+[dependencies.rustls]
+version = "0.21"
+features = ["dangerous_configuration"]
+
+[dependencies.arti-client]
+path = "./arti/crates/arti-client"
+features = ["experimental-api", "onion-service-client", "onion-service-custom-circ"]
+
+[dependencies.tor-rtcompat]
+path = "./arti/crates/tor-rtcompat"
+features = ["rustls", "tokio"]
+
+[dependencies.tor-circmgr]
+path = "./arti/crates/tor-circmgr"
+features = ["specific-relay"]
