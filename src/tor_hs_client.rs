@@ -183,4 +183,9 @@ impl TorHSClient {
         
         Ok(response_str.to_string())
     }
+
+    pub async fn select_relays(&self, relay_flags: u32, ipv6_required:bool, offset:usize, limit:i32)->AnyResult<Vec<String>>{
+        self.hs_client.select_relays(relay_flags, ipv6_required, offset, limit).await
+    }
+
 }

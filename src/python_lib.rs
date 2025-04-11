@@ -13,6 +13,58 @@ use pyo3::exceptions::PyValueError;
 use std::collections::HashMap;
 use futures::{AsyncReadExt, AsyncWriteExt};
 
+#[pyclass]
+#[pyo3(text_signature = "()")]
+pub struct RelayFlags {
+    #[pyo3(get)]
+    authority: u32,
+    #[pyo3(get)]
+    bad_exit: u32,
+    #[pyo3(get)]
+    exit: u32,
+    #[pyo3(get)]
+    fast: u32,
+    #[pyo3(get)]
+    guard: u32,
+    #[pyo3(get)]
+    hsdir: u32,
+    #[pyo3(get)]
+    middle_only: u32,
+    #[pyo3(get)]
+    no_ed_consensus: u32,
+    #[pyo3(get)]
+    stable: u32,
+    #[pyo3(get)]
+    stable_desc: u32,
+    #[pyo3(get)]
+    running: u32,
+    #[pyo3(get)]
+    valid: u32,
+    #[pyo3(get)]
+    v2dir: u32,
+}
+
+#[pymethods]
+impl RelayFlags {
+    #[new]
+    fn new() -> Self {
+        Self {
+            authority: 1 << 0,
+            bad_exit: 1 << 1,
+            exit: 1 << 2,
+            fast: 1 << 3,
+            guard: 1 << 4,
+            hsdir: 1 << 5,
+            middle_only: 1 << 6,
+            no_ed_consensus: 1 << 7,
+            stable: 1 << 8,
+            stable_desc: 1 << 9,
+            running: 1 << 10,
+            valid: 1 << 11,
+            v2dir: 1 << 12,
+        }
+    }
+}
 
 #[pyclass]
 #[pyo3(text_signature = "()")]
@@ -187,14 +239,28 @@ impl PyArtiHSClient {
                 .map_err(|e| PyValueError::new_err(format!("Request failed failed: {}", e)))
         })
     }
-}
 
+    #[pyo3(text_signature = "(relay_flags, ipv6_required, offset=0, limit=-1)")]
+    fn select_relays(
+        &self,
+        relay_flags: u32,
+        ipv6_required: bool,
+        offset: usize,
+        limit: i32,
+    ) -> PyResult<Vec<String>> {
+        self.runtime.block_on(async {
+            self.hs_client.select_relays(relay_flags, ipv6_required, offset, limit).await
+                .map_err(|e| PyValueError::new_err(format!("Failed to select relays: {}", e)))
+        })
+    }
+}
 
 #[pymodule]
 fn pyarti(_py: Python, m: &PyModule) -> PyResult<()> {
     env_logger::init();
     m.add_class::<PyArtiClient>()?;
     m.add_class::<PyArtiHSClient>()?;
-    m.add("__all__", vec!["PyArtiClient", "PyArtiHSClient"])?;
+    m.add_class::<RelayFlags>()?;
+    m.add("__all__", vec!["PyArtiClient", "PyArtiHSClient", "RelayFlags"])?;
     Ok(())
 }

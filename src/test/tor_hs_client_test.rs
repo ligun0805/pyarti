@@ -1,4 +1,5 @@
 use crate::tor_hs_client::TorHSClient;
+use tor_netdoc::doc::netstatus::RelayFlags;
 
 use log::info;
 use std::collections::HashMap;
@@ -16,10 +17,24 @@ pub async fn test_tor_hs_client() -> AnyResult<()> {
 
     client.init(Some(&storage)).await?;
 
+    let flags = RelayFlags::EXIT | RelayFlags::FAST;
+    let exit_flags = flags.bits();
+    let exit_relays = client.select_relays(
+        exit_flags.into(),
+        true, // ipv6_required
+        0,    // offset
+        10    // limit - get first 10 relays
+    ).await?;
+    
+    println!("\nFound {} EXIT relays with IPv6 support:", exit_relays.len());
+    for (i, relay) in exit_relays.iter().enumerate() {
+        println!("  {}: {}", i+1, relay);
+    }
+
     // Set custom relays for the circuit from client to rendezvous point
     client.set_custom_hs_relay_ids(
         "FFA72BD683BC2FCF988356E6BEC1E490F313FB07",
-        "B2708B9EFA3288656DFA9750B0FB926EB811EA77",
+        "00194c4feceb999cf8c7ef1d202ae9bf24d17545",
         "8929AF5554BE622DE3FE34812C03D65FE7D5D0F1",
     )?;
     

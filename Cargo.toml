@@ -31,12 +31,14 @@ tor-config = { path = "./arti/crates/tor-config" }
 tor-dirmgr = { path = "./arti/crates/tor-dirmgr" }
 tor-chanmgr = { path = "./arti/crates/tor-chanmgr" }
 tor-netdir = { path = "./arti/crates/tor-netdir" }
+tor-netdoc = { path = "./arti/crates/tor-netdoc" }
 tor-proto = { path = "./arti/crates/tor-proto" }
 tor-linkspec = { path = "./arti/crates/tor-linkspec" }
 tor-llcrypto = { path = "./arti/crates/tor-llcrypto" }
 tor-memquota = { path = "./arti/crates/tor-memquota" }
 tor-basic-utils = { path = "./arti/crates/tor-basic-utils" }
 tor-relay-selection = { path = "./arti/crates/tor-relay-selection" }
+
 
 [dependencies.pyo3]
 version = "0.18"

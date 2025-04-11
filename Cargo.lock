@@ -2586,6 +2586,7 @@ dependencies = [
  "tor-llcrypto",
  "tor-memquota",
  "tor-netdir",
+ "tor-netdoc",
  "tor-proto",
  "tor-relay-selection",
  "tor-rtcompat",

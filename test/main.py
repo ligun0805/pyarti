@@ -1,5 +1,5 @@
 import asyncio
-from pyarti import PyArtiClient, PyArtiHSClient
+from pyarti import PyArtiClient, PyArtiHSClient, RelayFlags
 
 # This is a test function
 async def client_test():
@@ -73,5 +73,43 @@ async def hs_client_test():
         print(e)
         return
 
+async def relay_selection_test():
+    py_arti = PyArtiHSClient()
+    
+    try:
+        storage = {
+            "state_dir": "/home/michael/Documents/Arti/state",
+            "cache_dir": "/home/michael/Documents/Arti/cache"
+        }
+        
+        py_arti.init(storage)
+
+        # Example 1: Find exit relays with IPv6 support
+        print("\nFinding exit relays with IPv6 support:")
+        flags = RelayFlags()
+        exit_flags = flags.exit | flags.fast
+        relays = py_arti.select_relays(exit_flags, ipv6_required=True, offset=0, limit=5)
+        for i, relay in enumerate(relays, 1):
+            print(f"{i}. {relay}")
+        
+        # Example 2: Find guard relays
+        print("\nFinding guard relays:")
+        guard_flags = flags.guard | flags.stable
+        relays = py_arti.select_relays(guard_flags, ipv6_required=False, offset=0, limit=5)
+        for i, relay in enumerate(relays, 1):
+            print(f"{i}. {relay}")
+        
+        # Example 3: Find middle relays with IPv6 support
+        print("\nFinding middle relays with IPv6 support:")
+        middle_flags = flags.middle_only | flags.fast
+        relays = py_arti.select_relays(middle_flags, ipv6_required=True, offset=0, limit=5)
+        for i, relay in enumerate(relays, 1):
+            print(f"{i}. {relay}")
+            
+    except Exception as e:
+        print(e)
+        return
+
 if __name__ == "__main__":
-    asyncio.run(hs_client_test())
+    asyncio.run(relay_selection_test())
+    #asyncio.run(hs_client_test())

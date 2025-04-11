@@ -1941,7 +1941,7 @@ impl<'a> Relay<'a> {
     ///
     /// This function is only available if the crate was built with
     /// its `experimental-api` feature.
-    #[cfg(feature = "experimental-api")]
+    ///#[cfg(feature = "experimental-api")]
     pub fn rs(&self) -> &netstatus::MdConsensusRouterStatus {
         self.rs
     }
